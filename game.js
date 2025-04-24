@@ -5,11 +5,16 @@ const btnLeft = document.querySelector("#left");
 const btnRight = document.querySelector("#right");
 const btnDown = document.querySelector("#down");
 const spanLives = document.querySelector("#lives");
+const spanTime = document.querySelector("#time");
 
 let canvasSize;
 let elementsSize;
 let level = 0;
 let lives = 3;
+
+let timeStart;
+let timePlayer;
+let timeInterval;
 
 const playerPosition = {
   x: undefined,
@@ -19,7 +24,6 @@ const giftPosition = {
   x: undefined,
   y: undefined,
 };
-
 let enemyPositions = [];
 
 window.addEventListener("load", setCanvasSize);
@@ -47,14 +51,22 @@ function startGame() {
   game.textAlign = "end";
 
   const map = maps[level];
+
   if (!map) {
     gameWin();
     return;
   }
 
+  if (!timeStart) {
+    timeStart = Date.now();
+    timeInterval = setInterval(showTime, 100);
+  }
+
   const mapRows = map.trim().split("\n");
   const mapRowCols = mapRows.map((row) => row.trim().split(""));
   console.log({ map, mapRows, mapRowCols });
+
+  showLives();
 
   enemyPositions = [];
   game.clearRect(0, 0, canvasSize, canvasSize);
@@ -85,7 +97,6 @@ function startGame() {
     });
   });
 
-  showLives();
   movePlayer();
 }
 
@@ -97,7 +108,6 @@ function movePlayer() {
   const giftCollision = giftCollisionX && giftCollisionY;
 
   if (giftCollision) {
-    console.log("Subiste de nisvel!");
     levelWin();
   }
 
@@ -115,31 +125,40 @@ function movePlayer() {
 }
 
 function levelWin() {
-  console.log("subiste de nivel");
+  console.log("Subiste de nivel");
   level++;
+  startGame();
 }
+
 function levelFail() {
-  console.log("perdiste");
+  console.log("Chocaste contra un enemigo :(");
   lives--;
 
   if (lives <= 0) {
     level = 0;
     lives = 3;
+    timeStart = undefined;
   }
+
   playerPosition.x = undefined;
   playerPosition.y = undefined;
   startGame();
 }
 
 function gameWin() {
-  console.log("ganaste");
+  console.log("¡Terminaste el juego!");
+  clearInterval(timeInterval);
 }
 
 function showLives() {
-  const heartsArray = Array(lives).fill(emojis["HEART"]);
+  const heartsArray = Array(lives).fill(emojis["HEART"]); // [1,2,3]
 
   spanLives.innerHTML = "";
   heartsArray.forEach((heart) => spanLives.append(heart));
+}
+
+function showTime() {
+  spanTime.innerHTML = Date.now() - timeStart;
 }
 
 window.addEventListener("keydown", moveByKeys);
