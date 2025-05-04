@@ -4,6 +4,7 @@ const btnUp = document.querySelector("#up");
 const btnLeft = document.querySelector("#left");
 const btnRight = document.querySelector("#right");
 const btnDown = document.querySelector("#down");
+const btnReset = document.querySelector("#reset");
 const spanLives = document.querySelector("#lives");
 const spanTime = document.querySelector("#time");
 const spanRecord = document.querySelector("#record");
@@ -108,6 +109,7 @@ function startGame() {
     });
   });
 
+  hideBtnReset();
   movePlayer();
 }
 
@@ -175,7 +177,7 @@ function gameWin() {
     pResult.innerHTML =
       "Primera vez? Muy bien, pero ahora trata de superar tu tiempo :)";
   }
-
+  showBtnReset();
   console.log({ recordTime, playerTime });
 }
 
@@ -192,6 +194,28 @@ function showTime() {
 
 function showRecord() {
   spanRecord.innerHTML = localStorage.getItem("record_time");
+}
+btnReset.addEventListener("click", restart);
+function restart() {
+  level = 0;
+  lives = 3;
+  timeStart = undefined;
+  hideBtnReset();
+  startGame();
+}
+function hideBtnReset() {
+  btnReset.style.display = "none";
+  btnUp.style.display = "block";
+  btnLeft.style.display = "block";
+  btnRight.style.display = "block";
+  btnDown.style.display = "block";
+}
+function showBtnReset() {
+  btnReset.style.display = "block";
+  btnUp.style.display = "none";
+  btnLeft.style.display = "none";
+  btnRight.style.display = "none";
+  btnDown.style.display = "none";
 }
 
 window.addEventListener("keydown", moveByKeys);

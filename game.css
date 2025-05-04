@@ -20,6 +20,9 @@ canvas {
   border-radius: 8px;
   background-color: #feff9d;
 }
+/* #reiniciar {
+  display: none;
+} */
 
 .btns {
   display: flex;
